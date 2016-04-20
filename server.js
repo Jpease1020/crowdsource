@@ -16,20 +16,28 @@ app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
-
+var votes = {}
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
-  
+
   io.sockets.emit('usersConnected', io.engine.clientsCount);
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
+    pollVotes(channel, message, socket)
   });
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
   });
 });
+
+function pollVotes(channel, message, socket){
+  if(channel === "voteCast"){
+    votes[socket.id] = message
+    socket.emit('yourVote', message)
+  }
+};
 
 module.exports = server;
