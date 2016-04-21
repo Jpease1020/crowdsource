@@ -15,7 +15,7 @@ if (!module.parent) {
 
 const socketIo = require('socket.io');
 const io = socketIo(server);
-
+// app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use(express.static('public'));
 
 app.get('/', function (req, res){
@@ -23,6 +23,7 @@ app.get('/', function (req, res){
 });
 
 var votes = {}
+var polls = {}
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -32,7 +33,8 @@ io.on('connection', function (socket) {
 
   socket.on('message', function (channel, message) {
     pollVotes(channel, message, socket)
-    console.log(votes)
+    createNewPoll(channel, message, socket)
+    // console.log(votes)
   });
 
   socket.on('disconnect', function () {
@@ -43,6 +45,16 @@ io.on('connection', function (socket) {
 function pollVotes(channel, message, socket){
   if(channel === "voteCast"){
     votes[socket.id] = message
+  };
+};
+
+function createNewPoll(channel, message, socket){
+  if(channel === 'newPoll'){
+    // create new links
+    
+  console.log(channel)
+  console.log(message)
+  console.log(socket.id)
   };
 };
 
