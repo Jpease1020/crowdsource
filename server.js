@@ -16,12 +16,19 @@ if (!module.parent) {
 
 const socketIo = require('socket.io');
 const io = socketIo(server);
-// app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
+
+
+
+
 app.use(express.static('public'));
 
 app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
+
+
+
+
 
 var votes = {}
 var polls = {}
@@ -53,9 +60,13 @@ function createNewPoll(channel, message, socket){
   if(channel === 'newPoll'){
     // create new links
   var urls = createUrls();
-  polls[urls.id] = urls
-  polls[urls.id].vote = {}
-  console.log(polls)
+  console.log(urls.id)
+  polls[urls.id] = {}
+  polls[urls.id]['pollId'] = urls.id
+  polls[urls.id].pollUrls = urls
+  polls[urls.id].poll = message
+  polls[urls.id].votes = {}
+  console.log(polls[urls.id])
   };
 };
 
@@ -65,8 +76,7 @@ function createUrls(){
   var adminUrl = 'polls/' + id
   var userUrl  = 'vote/' + id
   var groupVoteUrl = 'group-vote/' + id
-  return { id: id,
-          adminUrl: adminUrl,
+  return {adminUrl: adminUrl,
           userUrl: userUrl,
           groupVoteUrl: groupVoteUrl
           }
