@@ -26,6 +26,7 @@ io.on('connection', function (socket) {
 
   socket.on('message', function (channel, message) {
     pollVotes(channel, message, socket)
+    console.log(votes)
   });
 
   socket.on('disconnect', function () {
@@ -36,8 +37,7 @@ io.on('connection', function (socket) {
 function pollVotes(channel, message, socket){
   if(channel === "voteCast"){
     votes[socket.id] = message
-    socket.emit('yourVote', message)
-  }
+  };
 };
 
 module.exports = server;
