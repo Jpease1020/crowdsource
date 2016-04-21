@@ -9,7 +9,7 @@ const server = http.createServer(app)
 
 const socketIo = require('socket.io');
 const io = socketIo(server);
-
+// app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use(express.static('public'));
 
 app.get('/', function (req, res){

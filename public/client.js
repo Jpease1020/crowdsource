@@ -16,3 +16,8 @@ for (var i = 0; i < buttons.length; i++) {
     yourVote.innerText = this.innerText
   });
 };
+
+$('.create-new-poll').on('click', function(){
+  debugger
+  var $option1 = $('#option-1').val()
+});
