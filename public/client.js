@@ -7,6 +7,7 @@ socket.on('usersConnected', function (count) {
 });
 
 var buttons = document.querySelectorAll('#choices button');
+var $optionsContainer = $('.poll-options');
 
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener('click', function () {
@@ -16,6 +17,16 @@ for (var i = 0; i < buttons.length; i++) {
     yourVote.innerText = this.innerText
   });
 };
+
+$('.add-option').on('click', function(event){
+  event.preventDefault();
+  $optionsContainer.append('<input class="option" type="text" placeholder="poll option"></input>')
+});
+
+$('.remove-option').on('click', function(event){
+  event.preventDefault();
+  $('.option').last().remove()
+});
 
 $('.create-new-poll').on('click', function(){
   var $pollName = $('#poll-name').val()

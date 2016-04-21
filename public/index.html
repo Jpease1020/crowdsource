@@ -13,17 +13,15 @@
     </header>
 
     <h2>Enter info here for your new poll</h2>
-    <div class="">
+    <form>
       <input id="poll-name" class="input" type="text" placeholder="Poll Name"></input><br>
-    </div>
-    <div class="">
-      <input id="option-1" class="input" type="text" placeholder="Option 1"></input>
-      <input id="option-2" class="input" type="text" placeholder="Option 2"></input>
-      <input id="option-3" class="input" type="text" placeholder="Option 3"></input><br>
-    </div>
-    <div class="create-new-poll">
-      <button type="button" name="button">Submit</button>
-    </div>
+      <div class="poll-options">
+        <input class="option" type="text" placeholder="poll option"></input>
+      </div>
+      <button class="add-option">Add Option</button>
+      <button class="remove-option">Remove Option</button>
+      <input type="submit" class="submit-poll"></button>
+    </fom>
     <br>
     <h1>Do you understand</h1>
     <div id="status-message"></div>

@@ -1,6 +1,7 @@
 const http = require('http');
 const express = require('express');
 const app = express();
+const crypto = require('crypto');
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
                    .listen(port, function () {
@@ -51,11 +52,24 @@ function pollVotes(channel, message, socket){
 function createNewPoll(channel, message, socket){
   if(channel === 'newPoll'){
     // create new links
-    
-  console.log(channel)
-  console.log(message)
-  console.log(socket.id)
+  var urls = createUrls();
+  polls[urls.id] = urls
+  polls[urls.id].vote = {}
+  console.log(polls)
   };
+};
+
+function createUrls(){
+  var id = crypto.randomBytes(10).toString('hex');
+  console.log(id)
+  var adminUrl = 'polls/' + id
+  var userUrl  = 'vote/' + id
+  var groupVoteUrl = 'group-vote/' + id
+  return { id: id,
+          adminUrl: adminUrl,
+          userUrl: userUrl,
+          groupVoteUrl: groupVoteUrl
+          }
 };
 
 module.exports = server;
