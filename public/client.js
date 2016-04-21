@@ -12,11 +12,7 @@ for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener('click', function () {
     console.log(this.innerText)
     socket.send('voteCast', this.innerText);
+    var yourVote = document.getElementById('your-vote')
+    yourVote.innerText = this.innerText
   });
-}
-
-socket.on('yourVote', function(vote){
-  var yourVote = document.getElementById('your-vote')
-  yourVote.innerText = vote
-  console.log(vote)
-});
+};
