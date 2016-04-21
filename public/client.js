@@ -3,5 +3,20 @@ var socket = io();
 var connectionCount = document.getElementById('connection-count');
 
 socket.on('usersConnected', function (count) {
-  connectionCount.innerText = 'Connected Users: ' + count;
+  console.log(count)
+});
+
+var buttons = document.querySelectorAll('#choices button');
+
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener('click', function () {
+    console.log(this.innerText)
+    socket.send('voteCast', this.innerText);
+  });
+}
+
+socket.on('yourVote', function(vote){
+  var yourVote = document.getElementById('your-vote')
+  yourVote.innerText = vote
+  console.log(vote)
 });
