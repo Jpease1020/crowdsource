@@ -30,6 +30,17 @@ $('.submit-poll').on('click', function(){
   });
   socket.send('newPoll', newPollInfo);
 });
+
+var $newPollLinks = $('.new-poll-links')
+
+socket.on('newPoll', function(poll){
+  $newPollLinks.append('<div><a href="' + poll.pollUrls.adminUrl + '">admin page</a></div>')
+  $newPollLinks.append('<div><a href="' + poll.pollUrls.userUrl + '">user page page</a></div>')
+  $newPollLinks.append('<div><a href="' + poll.pollUrls.groupVoteUrl + '">group page</a></div>')
+  console.log(poll)
+//
+});
+
   //
   // collect the input info
   // send the info to server

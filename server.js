@@ -32,6 +32,7 @@ app.get('/', function (req, res){
 
 var votes = {}
 var polls = {}
+var messages = {}
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -58,21 +59,21 @@ function pollVotes(channel, message, socket){
 
 function createNewPoll(channel, message, socket){
   if(channel === 'newPoll'){
-    // create new links
-  var urls = createUrls();
-  console.log(urls.id)
-  polls[urls.id] = {}
-  polls[urls.id]['pollId'] = urls.id
-  polls[urls.id].pollUrls = urls
-  polls[urls.id].poll = message
-  polls[urls.id].votes = {}
-  console.log(polls[urls.id])
+  var id = crypto.randomBytes(10).toString('hex');
+  var urls = createUrls(id);
+  var yourNewPoll = {}
+
+  yourNewPoll.pollId = id
+  yourNewPoll.pollUrls = urls
+  yourNewPoll.poll = message
+  yourNewPoll.votes = {}
+  console.log(yourNewPoll)
+
+  socket.emit('newPoll', yourNewPoll)
   };
 };
 
-function createUrls(){
-  var id = crypto.randomBytes(10).toString('hex');
-  console.log(id)
+function createUrls(id){
   var adminUrl = 'polls/' + id
   var userUrl  = 'vote/' + id
   var groupVoteUrl = 'group-vote/' + id
