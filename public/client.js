@@ -57,6 +57,6 @@ socket.on(pollId, function(votes){
   console.log("this is a privte vote", votes)
   $('.all-votes').children().remove()
   for(var vote in votes){
-    $('.all-votes').append('<div>' + votes[vote] + '</div>')
+    $('.all-votes').append('<div>' + vote + ': ' + votes[vote].length + '</div>')
   }
 });

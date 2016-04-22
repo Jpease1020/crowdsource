@@ -17,7 +17,8 @@
         <% for(option in poll.poll.pollOptions){ %>
           <button class="vote-cast"><%= poll.poll.pollOptions[option] %></button>
         <% } %>
-    </div>
+    </div><br>
+    <h3>Here is your poll votes: </h3>
     <div class="all-votes">
     </div>
     <script src="/socket.io/socket.io.js"></script>
