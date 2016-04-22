@@ -35,11 +35,12 @@ $('.submit-poll').on('click', function(){
 var $newPollLinks = $('.new-poll-links')
 
 socket.on('newPoll', function(poll){
-  $newPollLinks.append('<div>This page is for controlling the poll: <a href="' +
-                        poll.pollUrls.adminUrl + '">admin page</a></div>')
-  $newPollLinks.append('<div>Share this page for users to vote privately: <a href="' +
+  $('.new-poll-links').children().remove()
+  $newPollLinks.append("<div>This link will shows the poll results as they come in: <a href=" +
+                        poll.pollUrls.adminUrl + ">Public Poll/Voting Page</a></div>")
+  $newPollLinks.append('<div>Send this link to your voters for a private vote: <a href=' +
                         poll.pollUrls.userUrl +
-                       '">private voting page</a></div>')
+                       '>Private Voting Page</a></div>')
   console.log(poll)
 });
 
