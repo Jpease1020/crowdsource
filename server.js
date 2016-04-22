@@ -1,38 +1,43 @@
 const http = require('http');
 const express = require('express');
 const app = express();
+const ejs = require('ejs')
 const crypto = require('crypto');
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
                    .listen(port, function () {
-  console.log('Listening on port ' + port + '.');
+  // console.log('Listening on port ' + port + '.');
 });
-
-if (!module.parent) {
-  app.listen(app.get('port'), () => {
-    console.log(`${app.locals.title} is running on ${app.get('port')}.`);
-  });
-}
-
 const socketIo = require('socket.io');
 const io = socketIo(server);
 
+if (!module.parent) {
+  app.listen(app.get('port'), () => {
+    // console.log(`${app.locals.title} is running on ${app.get('port')}.`);
+  });
+}
 
 
+var polls = {}
 
 app.use(express.static('public'));
+app.set('view engine', 'ejs')
 
 app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
+app.get("/polls/:id", function(req, res){
+  var poll = polls[req.params.id]
+  res.render('polls', { poll: poll });
+});
 
+app.get("/vote/:id", function(req, res){
+  // console.log(polls)
+  var poll = polls[req.params.id]
+  res.render('vote', { poll: poll });
+});
 
-
-
-var votes = {}
-var polls = {}
-var messages = {}
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -41,8 +46,9 @@ io.on('connection', function (socket) {
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
-    pollVotes(channel, message, socket)
-    createNewPoll(channel, message, socket)
+    createNewPoll(channel, message, socket);
+    pollVotes(channel, message, socket);
+    // voteCast(channel, message, socket);
     // console.log(votes)
   });
 
@@ -53,12 +59,14 @@ io.on('connection', function (socket) {
 
 function pollVotes(channel, message, socket){
   if(channel === "voteCast"){
-    votes[socket.id] = message
+    polls[message.pollId]['votes'][socket.id] = message.vote
+    io.sockets.emit(polls)
+    // console.log(polls)
   };
 };
 
 function createNewPoll(channel, message, socket){
-  if(channel === 'newPoll'){
+  if(channel === 'createNewPoll'){
   var id = crypto.randomBytes(10).toString('hex');
   var urls = createUrls(id);
   var yourNewPoll = {}
@@ -67,8 +75,9 @@ function createNewPoll(channel, message, socket){
   yourNewPoll.pollUrls = urls
   yourNewPoll.poll = message
   yourNewPoll.votes = {}
-  console.log(yourNewPoll)
+  // console.log(yourNewPoll)
 
+  polls[id] = yourNewPoll
   socket.emit('newPoll', yourNewPoll)
   };
 };
@@ -76,10 +85,8 @@ function createNewPoll(channel, message, socket){
 function createUrls(id){
   var adminUrl = 'polls/' + id
   var userUrl  = 'vote/' + id
-  var groupVoteUrl = 'group-vote/' + id
   return {adminUrl: adminUrl,
           userUrl: userUrl,
-          groupVoteUrl: groupVoteUrl
           }
 };
 
