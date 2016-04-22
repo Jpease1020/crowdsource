@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const ejs = require('ejs')
+const _ = require('lodash')
 const crypto = require('crypto');
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
@@ -48,22 +49,12 @@ io.on('connection', function (socket) {
   socket.on('message', function (channel, message) {
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
-    // voteCast(channel, message, socket);
-    // console.log(votes)
   });
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
   });
 });
-
-function pollVotes(channel, message, socket){
-  if(channel === "voteCast"){
-    polls[message.pollId]['votes'][socket.id] = message.vote
-    io.sockets.emit(polls)
-    // console.log(polls)
-  };
-};
 
 function createNewPoll(channel, message, socket){
   if(channel === 'createNewPoll'){
@@ -75,7 +66,6 @@ function createNewPoll(channel, message, socket){
   yourNewPoll.pollUrls = urls
   yourNewPoll.poll = message
   yourNewPoll.votes = {}
-  // console.log(yourNewPoll)
 
   polls[id] = yourNewPoll
   socket.emit('newPoll', yourNewPoll)
@@ -88,6 +78,21 @@ function createUrls(id){
   return {adminUrl: adminUrl,
           userUrl: userUrl,
           }
+};
+
+function pollVotes(channel, message, socket){
+  if(channel === "voteCast"){
+    polls[message.pollId]['votes'][socket.id] = message.vote
+    console.log(polls)
+    var restrictedChannel = polls[message.pollId]['pollId']
+    var organizedPoll = organizePoll(polls[message.pollId]['votes'])
+    io.sockets.emit(restrictedChannel, organizedPoll)
+  };
+};
+
+function organizePoll(poll){
+  var goodLookingPoll = _.invertBy(poll);
+  return goodLookingPoll
 };
 
 module.exports = server;
