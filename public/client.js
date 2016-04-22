@@ -55,4 +55,8 @@ for (var i = 0; i < $choices.length; i++) {
 
 socket.on(pollId, function(votes){
   console.log("this is a privte vote", votes)
+  $('.all-votes').children().remove()
+  for(var vote in votes){
+    $('.all-votes').append('<div>' + votes[vote] + '</div>')
+  }
 });
