@@ -2,8 +2,10 @@
 <div class="pole-name">
   <h1><%= poll.poll.pollName %></h1>
 </div>
-<div>Total votes cast: <span id="vote-count"></span></div>
+<div>Total votes cast: <span id="vote-count"><%= poll.votes.count %></span></div>
 <div>Your vote: <span id="your-vote"></span></div>
 <div id="choices">
-  <button></button>
+  <% for(var i = 0; i < poll.poll.pollOptions.length; i++){
+    $('.poll-choices').append('<button>Hi</button>')
+  }%>
 </div>

@@ -1,9 +1,25 @@
-<h1>Cast a vote</h1>
-<div id="status-message"></div>
-<div class="pole-name">
-  <h1><%= poll.poll.pollName %></h1>
-</div>
-<div>Total votes cast: <span id="vote-count"></span></div>
-<div>Your vote: <span id="your-vote"></span></div>
-<div class="poll-choices">
-</div>
+<!doctype html>
+<html>
+  <head>
+    <title>Crowdsource</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <h1>Cast a vote</h1>
+    <div class="poll-id hidden"><%= poll.pollId %></div>
+    <div id="status-message"></div>
+    <div class="pole-name">
+      <h1><%= poll.poll.pollName %></h1>
+    </div>
+    <div>Total votes cast: <span id="vote-count"></span></div>
+    <div>Your vote: <span id="your-vote"></span></div>
+    <div class="poll-choices">
+        <% for(option in poll.poll.pollOptions){ %>
+          <button class="vote-cast"><%= poll.poll.pollOptions[option] %></button>
+        <% } %>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/jquery.js"></script>
+    <script src="/client.js"></script>
+  </body>
+</html>

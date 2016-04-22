@@ -23,35 +23,37 @@ $removeOption.on('click', function(event){
 $('.submit-poll').on('click', function(){
   event.preventDefault();
   var $pollName = $('#poll-name').val();
-  var newPollInfo = { pollName: $pollName };
+  var newPollInfo = { pollName: $pollName,
+                      pollOptions: {}
+                    };
 
   var options = $('.option').map(function(index, element) {
-    newPollInfo['option' + (index + 1)] = $(element).val()
+    newPollInfo.pollOptions['option' + (index + 1)] = $(element).val()
   });
-  socket.send('newPoll', newPollInfo);
+  socket.send('createNewPoll', newPollInfo);
 });
 
 var $newPollLinks = $('.new-poll-links')
 
 socket.on('newPoll', function(poll){
-  $newPollLinks.append('<div>This page is for contrrolling the poll: <a href="' +
+  $newPollLinks.append('<div>This page is for controlling the poll: <a href="' +
                         poll.pollUrls.adminUrl + '">admin page</a></div>')
   $newPollLinks.append('<div>Share this page for users to vote privately: <a href="' +
                         poll.pollUrls.userUrl +
                        '">private voting page</a></div>')
-  $newPollLinks.append('<div>Share this link to allow users to vote publically: <a href="' +
-                        poll.pollUrls.groupVoteUrl +
-                        '">group voting page</a></div>')
   console.log(poll)
 });
 
-
-
-// for (var i = 0; i < buttons.length; i++) {
-//   buttons[i].addEventListener('click', function () {
-//     console.log(this.innerText)
-//     socket.send('voteCast', this.innerText);
-//     var yourVote = document.getElementById('your-vote')
-//     yourVote.innerText = this.innerText
-//   });
-// };
+var $choices = document.querySelectorAll('.poll-choices button');
+var pollId = $('.poll-id').html()
+for (var i = 0; i < $choices.length; i++) {
+  $choices[i].addEventListener('click', function () {
+    // $('.vote-cast').css("background-color:red")
+    // console.log(this.innerText)
+    // this.css('background-color:blue')
+    var message = {pollId: pollId, vote: this.innerText}
+    socket.send('voteCast', message);
+    // var yourVote = document.getElementById('your-vote')
+    // yourVote.innerText = this.innerText
+  });
+};
