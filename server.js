@@ -30,11 +30,11 @@ app.get('/', function (req, res){
 
 app.get("/polls/:id", function(req, res){
   var poll = polls[req.params.id]
+  console.log(poll)
   res.render('polls', { poll: poll });
 });
 
 app.get("/vote/:id", function(req, res){
-  // console.log(polls)
   var poll = polls[req.params.id]
   res.render('vote', { poll: poll });
 });
