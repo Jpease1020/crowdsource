@@ -34,18 +34,24 @@ $('.submit-poll').on('click', function(){
 var $newPollLinks = $('.new-poll-links')
 
 socket.on('newPoll', function(poll){
-  $newPollLinks.append('<div><a href="' + poll.pollUrls.adminUrl + '">admin page</a></div>')
-  $newPollLinks.append('<div><a href="' + poll.pollUrls.userUrl + '">user page page</a></div>')
-  $newPollLinks.append('<div><a href="' + poll.pollUrls.groupVoteUrl + '">group page</a></div>')
+  $newPollLinks.append('<div>This page is for contrrolling the poll: <a href="' +
+                        poll.pollUrls.adminUrl + '">admin page</a></div>')
+  $newPollLinks.append('<div>Share this page for users to vote privately: <a href="' +
+                        poll.pollUrls.userUrl +
+                       '">private voting page</a></div>')
+  $newPollLinks.append('<div>Share this link to allow users to vote publically: <a href="' +
+                        poll.pollUrls.groupVoteUrl +
+                        '">group voting page</a></div>')
   console.log(poll)
-//
 });
 
-  //
-  // collect the input info
-  // send the info to server
-  // server side make new urls
-  // make a new poll object and add to poll store object
-  // new poll object should have the urls and the poll
-  // make a new poll page
-  // send the new urls back to the client
+
+
+// for (var i = 0; i < buttons.length; i++) {
+//   buttons[i].addEventListener('click', function () {
+//     console.log(this.innerText)
+//     socket.send('voteCast', this.innerText);
+//     var yourVote = document.getElementById('your-vote')
+//     yourVote.innerText = this.innerText
+//   });
+// };

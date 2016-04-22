@@ -1,6 +1,7 @@
 const http = require('http');
 const express = require('express');
 const app = express();
+const ejs = require('ejs')
 const crypto = require('crypto');
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
@@ -17,22 +18,35 @@ if (!module.parent) {
 const socketIo = require('socket.io');
 const io = socketIo(server);
 
-
-
+var polls = {}
 
 app.use(express.static('public'));
+app.set('view engine', 'ejs')
 
 app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
+app.get("/polls/:id", function(req, res){
+  var poll = polls[req.params.id]
+  res.render('polls', { poll: poll });
+});
 
+app.get("/vote/:id", function(req, res){
+  console.log("heeyyeyeyeyeyeyeye")
+  console.log(req.params.id)
+  console.log(polls)
+  var poll = polls[req.params.id]
+  res.render('vote', { poll: poll });
+});
 
-
-
-var votes = {}
-var polls = {}
-var messages = {}
+app.get("/group-vote/:id", function(req, res){
+  console.log("heeyyeyeyeyeyeyeye")
+  console.log(req.params.id)
+  console.log(polls)
+  var poll = polls[req.params.id]
+  res.render('group-vote', { poll: poll });
+});
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -69,6 +83,7 @@ function createNewPoll(channel, message, socket){
   yourNewPoll.votes = {}
   console.log(yourNewPoll)
 
+  polls[id] = yourNewPoll
   socket.emit('newPoll', yourNewPoll)
   };
 };
