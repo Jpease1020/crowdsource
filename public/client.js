@@ -5,7 +5,6 @@ socket.on('usersConnected', function (count) {
   console.log(count)
 });
 
-// var buttons = document.querySelectorAll('#choices button');
 var $optionsContainer = $('.poll-options');
 var $addOption = $('.add-option');
 var $removeOption = $('.remove-option');
@@ -48,12 +47,12 @@ var $choices = document.querySelectorAll('.poll-choices button');
 var pollId = $('.poll-id').html()
 for (var i = 0; i < $choices.length; i++) {
   $choices[i].addEventListener('click', function () {
-    // $('.vote-cast').css("background-color:red")
-    // console.log(this.innerText)
-    // this.css('background-color:blue')
     var message = {pollId: pollId, vote: this.innerText}
     socket.send('voteCast', message);
-    // var yourVote = document.getElementById('your-vote')
-    // yourVote.innerText = this.innerText
+    $('#your-vote').html(this.innerText)
   });
 };
+
+socket.on(pollId, function(votes){
+  console.log("this is a privte vote", votes)
+});

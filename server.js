@@ -48,8 +48,6 @@ io.on('connection', function (socket) {
   socket.on('message', function (channel, message) {
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
-    // voteCast(channel, message, socket);
-    // console.log(votes)
   });
 
   socket.on('disconnect', function () {
@@ -60,8 +58,9 @@ io.on('connection', function (socket) {
 function pollVotes(channel, message, socket){
   if(channel === "voteCast"){
     polls[message.pollId]['votes'][socket.id] = message.vote
-    io.sockets.emit(polls)
-    // console.log(polls)
+    console.log(polls)
+    var restrictedChannel = polls[message.pollId]['pollId']
+    io.sockets.emit(restrictedChannel, polls[message.pollId]['votes'])
   };
 };
 
@@ -75,7 +74,6 @@ function createNewPoll(channel, message, socket){
   yourNewPoll.pollUrls = urls
   yourNewPoll.poll = message
   yourNewPoll.votes = {}
-  // console.log(yourNewPoll)
 
   polls[id] = yourNewPoll
   socket.emit('newPoll', yourNewPoll)
