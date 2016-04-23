@@ -23,7 +23,8 @@ $('.submit-poll').on('click', function(){
   event.preventDefault();
   var $pollName = $('#poll-name').val();
   var newPollInfo = { pollName: $pollName,
-                      pollOptions: {}
+                      pollOptions: {},
+                      pollStartTime: Date.now()
                     };
 
   var options = $('.option').map(function(index, element) {
@@ -41,7 +42,6 @@ socket.on('newPoll', function(poll){
   $newPollLinks.append('<div>Send this link to your voters for a private vote: <a href=' +
                         poll.pollUrls.userUrl +
                        '>Private Voting Page</a></div>')
-  console.log(poll)
 });
 
 var $choices = document.querySelectorAll('.poll-choices button');

@@ -64,7 +64,7 @@ function createNewPoll(channel, message, socket){
 
   yourNewPoll.pollId = id
   yourNewPoll.pollUrls = urls
-  yourNewPoll.poll = message
+  yourNewPoll.pollInfo = message
   yourNewPoll.votes = {}
 
   polls[id] = yourNewPoll
@@ -84,9 +84,9 @@ function pollVotes(channel, message, socket){
   if(channel === "voteCast"){
     polls[message.pollId]['votes'][socket.id] = message.vote
     console.log(polls)
-    var restrictedChannel = polls[message.pollId]['pollId']
+    var individualPollChannel = polls[message.pollId]['pollId']
     var organizedPoll = organizePoll(polls[message.pollId]['votes'])
-    io.sockets.emit(restrictedChannel, organizedPoll)
+    io.sockets.emit(individualPollChannel, organizedPoll)
   };
 };
 
