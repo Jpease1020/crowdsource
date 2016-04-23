@@ -23,7 +23,9 @@ $('.submit-poll').on('click', function(){
   var $pollDuration = $('.close-poll-time').val()
   event.preventDefault();
   var $pollName = $('#poll-name').val();
+  var $password = $('#password').val()
   var newPollInfo = { pollName: $pollName,
+                      password: $password,
                       pollOptions: {},
                       startTime: Date.now(),
                       pollDuration: parseInt($pollDuration),
@@ -71,4 +73,21 @@ socket.on("pollEnded", function(){
   $('.poll-choices').append(
     '<h2>thanks for playing but the poll is now closed</h2>'
     )
+});
+
+socket.on('ok', function(){
+  $('.admin-stuff').append(
+    '<button id="close-poll">Close the Poll</buttton>'
+  )
+});
+
+$('#close-poll').on('click', function(){
+  console.log("yeayayaya")
+  socket.send('close-poll', pollId)
+});
+
+$('#submit-password').on('click', function(){
+  var $password = $('#password').val()
+  var pollIdAndPassword = {id: pollId, password: $password }
+  socket.send('password', pollIdAndPassword)
 });

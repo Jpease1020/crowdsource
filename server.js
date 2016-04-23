@@ -50,11 +50,14 @@ io.on('connection', function (socket) {
   socket.on('message', function (channel, message) {
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
+    adminControlls(channel, message, socket);
+    closePoll(channel, message);
   });
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
   });
+
 });
 
 function createNewPoll(channel, message, socket){
@@ -97,9 +100,22 @@ function organizePoll(poll){
   return goodLookingPoll
 };
 
+function adminControlls(channel, message, socket){
+  if(channel === 'password'){
+    socket.emit('ok')
+  }
+};
+
+function closePoll(channel, pollId){
+  if(channel === "close-poll"){
+    console.log('heyeyeyeyeyeyeey')
+    polls[pollId]['pollInfo']['active'] = false
+  }
+};
+
 setInterval(function() {
     for(var i = 0; i <= activePolls.length -1; i++){
-      var pollInfo = activePolls[i]['pollInfo']
+      var pollInfo = (activePolls[i]['pollInfo'] || 600000)
       var pollEndTime = pollInfo['startTime'] + (pollInfo['pollDuration'] * 60000)
       if(pollEndTime < Date.now()){
         pollInfo['active'] = false
