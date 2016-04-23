@@ -64,3 +64,11 @@ socket.on(pollId, function(votes){
     $('.all-votes').append('<div>' + vote + ': ' + votes[vote].length + '</div>')
   }
 });
+
+socket.on("pollEnded", function(){
+  console.log("poll has now closed", $choices)
+  $('.vote-cast').remove()
+  $('.poll-choices').append(
+    '<h2>thanks for playing but the poll is now closed</h2>'
+    )
+});

@@ -97,21 +97,16 @@ function organizePoll(poll){
   return goodLookingPoll
 };
 
-  setInterval(function() {
-    if(activePolls.length >= 1){
-      console.log(activePolls)
-      for(var i = 0; i <= activePolls.length -1; i++){
-        var pollInfo = activePolls[i]['pollInfo']
-        var pollEndTime = pollInfo['startTime'] + (pollInfo['pollDuration'] * 60000)
-        if(pollEndTime < Date.now()){
-          console.log(Date.now())
-          console.log(pollEndTime)
-          pollInfo['active'] = false
-          activePolls.splice(activePolls.indexOf(activePolls[i]), 1)
-          console.log(activePolls)
-        };
+setInterval(function() {
+    for(var i = 0; i <= activePolls.length -1; i++){
+      var pollInfo = activePolls[i]['pollInfo']
+      var pollEndTime = pollInfo['startTime'] + (pollInfo['pollDuration'] * 60000)
+      if(pollEndTime < Date.now()){
+        pollInfo['active'] = false
+        activePolls.splice(activePolls.indexOf(activePolls[i]), 1)
+        io.sockets.emit("pollEnded", {})
       };
     };
-  }, 10000);
+}, 10000);
 
 module.exports = server;
