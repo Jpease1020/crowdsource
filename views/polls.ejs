@@ -5,9 +5,12 @@
     <link rel="stylesheet" href="/style.css">
   </head>
   <body>
+
     <h1>View the Poll</h1>
-    <div class="poll-id hidden"><%= poll.pollId %></div>
-    <div class="poll-info hidden"><%= poll.pollInfo %></div>
+    <div class="hidden-stuff">
+      <div class="poll-id hidden"><%= poll.pollId %></div>
+      <div class="poll-info hidden"><%= poll.pollInfo %></div>
+    </div>
     <div class="pole-name">
       <h1>Pole Name: <%= poll.pollInfo.pollName %></h1>
     </div>
@@ -18,8 +21,8 @@
         <% } %>
     </div><br>
     <h3>Here are your poll votes: </h3>
-    <div class="all-votes">
-    </div>
+    <div class="all-votes"></div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/jquery.js"></script>
     <script src="/client.js"></script>

@@ -7,34 +7,39 @@
   <body>
     <header>
       <h1 class='centered'>Welcome to Crowdsource Where you can set up polls.  Woo hoo!</h1>
-      <p>To set up a new poll, fill in the information below and click submit</p>
-      <p>You will find 3 links, a voter link which lets someone cast a vote</p>
-      <p>a show votes link which will show everyones votes</p>
-      <p>and an admin link that allows you to controll when the voting ends and other admin functions</p>
+      <p>To set up a new poll, fill in the information below and click submit.
+      <p>You will be given 2 links, a voter link which lets someone cast a vote
+        privately and a public voting link which will show all the votes as they come in.</p>
     </header>
 
     <h2>Enter info here for your new poll</h2>
     <form>
-      <label for="">Poll Title</label>
-      <input id="poll-name" class="input" type="text" placeholder="Poll Name"></input><br>
-      <div class="poll-options">
-      <label>Create Options</label>
-        <input class="option" type="text" placeholder="poll option"></input>
-      </div>
-      <button class="add-option">Add Option</button>
-      <button class="remove-option">Remove Option</button>
-      <p>Optional: How many minutes from now do you want to close the poll?</p>
-      <input type="text" class="close-poll-time" placeholder="#"></input>
-      <p>That's is click below to create your poll</p>
-      <div class="">
-        <input type="submit" class="submit-poll"></input>
-      </div>
-    </form>
+      <fieldset>
+        <label for="">Poll Title: </label>
+        <input id="poll-name" class="input" type="text" placeholder="Poll Name"></input><br>
+        <div class="poll-options">
+          <label>Create Poll Options: </label>
+          <input class="option" type="text" placeholder="poll option"></input>
+        </div><br>
+        <div class="">
+          <button class="add-option">Add Option</button>
+          <button class="remove-option">Remove Option</button>
+        </div>
+        <div class="">
+          <p>Optional: How many minutes from now do you want to close the poll?</p>
+          <input type="text" class="close-poll-time" placeholder="#"></input>
+        </div>
+        <div class="">
+          <p>That's is click submit to create your poll and receive links to the poll</p>
+          <input type="submit" class="submit-poll"></input>
+        </div>
+      </fieldset>
+    </form><br><br>
 
-    <div class="new-poll-links">
-    </div>
-
-    <div id="close-poll-button">
+    <div class="new-poll">
+      <div class="new-poll-links"></div><br>
+      <p>Click below at any time to close the poll</p>
+      <div id="close-poll-button"></div>
     </div>
 
     <!-- Make sure your JS is at the bottom of the body! -->
