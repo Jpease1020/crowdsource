@@ -69,10 +69,11 @@ function displayPollInfo(){
   socket.on('newPoll', function(poll){
     $('.new-poll-links').children().remove()
     $newPollLinks.append("<div>This link will shows the poll results as they come in: <a href=" +
-                          poll.pollUrls.adminUrl + ">Public Poll/Voting Page</a></div>")
+                          poll.pollUrls.adminUrl + ">Public Poll/Voting Page</a></div><br>")
     $newPollLinks.append('<div>Send this link to your voters for a private vote: <a href=' +
                           poll.pollUrls.userUrl +
                          '>Private Voting Page</a></div>')
+    $closePollDiv.children().remove()
     $closePollDiv.append('<button class="close-poll" id="' + poll.pollUrls.adminUrl + '">Close the Poll</buttton>')
   });
 };
