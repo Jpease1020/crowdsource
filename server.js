@@ -26,7 +26,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs')
 
 app.get('/', function (req, res){
-  res.sendFile(__dirname + '/public/index.html');
+  res.render('index');
 });
 
 app.get("/polls/:id", function(req, res){
@@ -110,7 +110,7 @@ function closePoll(channel, pollId){
 setInterval(function() {
     for(var i = 0; i <= activePolls.length -1; i++){
       var pollInfo = activePolls[i]['pollInfo']
-      var pollDuration = pollInfo['pollDuration'] || 1000
+      var pollDuration = pollInfo['pollDuration'] || 1440
       var pollEndTime = pollInfo['startTime'] + (pollDuration * 60000)
       if(pollEndTime < Date.now()){
         pollInfo['active'] = false

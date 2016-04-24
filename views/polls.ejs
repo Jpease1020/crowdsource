@@ -6,20 +6,23 @@
   </head>
   <body>
     <h1>View the Poll</h1>
-    <div class="poll-id hidden"><%= poll.pollId %></div>
-    <div class="poll-info hidden"><%= poll.pollInfo %></div>
-    <div class="pole-name">
-      <h1>Pole Name: <%= poll.pollInfo.pollName %></h1>
+    <div class="hidden-stuff">
+      <div class="poll-id hidden"><%= poll.pollId %></div>
+      <div class="poll-info hidden"><%= poll.pollInfo %></div>
     </div>
-    <div>Your vote: <span id="your-vote"></span></div>
+    <div class="pole-name">
+      <h2>Pole Name: <%= poll.pollInfo.pollName %></h2>
+    </div>
+    <div>Your vote: <span id="your-vote"></span></div><br>
     <div class="poll-choices">
+      <label>Cast a Vote: </label>
         <% for(option in poll.pollInfo.pollOptions){ %>
-          <button class="vote-cast"><%= poll.pollInfo.pollOptions[option] %></button>
+        <button class="vote-cast"><%= poll.pollInfo.pollOptions[option] %></button>
         <% } %>
     </div><br>
-    <h3>Here are your poll votes: </h3>
-    <div class="all-votes">
-    </div>
+    <h2>Here are the poll's votes: </h2>
+    <div class="all-votes"></div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/jquery.js"></script>
     <script src="/client.js"></script>

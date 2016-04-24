@@ -20,9 +20,11 @@ $removeOption.on('click', function(event){
 });
 
 $('.submit-poll').on('click', function(){
-  var $pollDuration = $('.close-poll-time').val()
   event.preventDefault();
-  var newPollInfo = { pollOptions: {},
+  var $pollDuration = $('.close-poll-time').val()
+  var $pollName = $('#poll-name').val();
+  var newPollInfo = { pollName: $pollName,
+                      pollOptions: {},
                       startTime: Date.now(),
                       pollDuration: parseInt($pollDuration),
                       active: true
