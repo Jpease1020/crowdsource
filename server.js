@@ -26,7 +26,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs')
 
 app.get('/', function (req, res){
-  res.sendFile(__dirname + '/public/index.html');
+  res.render('index');
 });
 
 app.get("/polls/:id", function(req, res){
