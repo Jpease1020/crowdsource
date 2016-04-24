@@ -4,13 +4,12 @@ const app = express();
 const ejs = require('ejs')
 const _ = require('lodash')
 const crypto = require('crypto');
+
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
                    .listen(port, function () {
-  // console.log('Listening on port ' + port + '.');
+  console.log('Listening on port ' + port + '.');
 });
-const socketIo = require('socket.io');
-const io = socketIo(server);
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
@@ -18,28 +17,34 @@ if (!module.parent) {
   });
 }
 
-
-var polls = {}
-var activePolls = []
+const socketIo = require('socket.io');
+const io = socketIo(server);
 
 app.use(express.static('public'));
 app.set('view engine', 'ejs')
+
 
 app.get('/', function (req, res){
   res.render('index');
 });
 
 app.get("/polls/:id", function(req, res){
-  var poll = polls[req.params.id]
-  console.log(poll)
-  res.render('polls', { poll: poll });
+  res.render('polls', { poll: getPollByParamsId(req) });
 });
 
 app.get("/vote/:id", function(req, res){
-  var poll = polls[req.params.id]
-  res.render('vote', { poll: poll });
+  res.render('vote', { poll: getPollByParamsId(req) });
 });
 
+function getPollByParamsId(req){
+  var poll = allPolls[req.params.id]
+  return poll
+};
+
+// var channellChecker = { 'createNewPoll': createNewPoll,
+//                         'voteCast': pollVotes,
+//                         'close-poll': closePoll
+//                       }
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -48,6 +53,7 @@ io.on('connection', function (socket) {
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
+    // channellChecker[channel]
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
     closePoll(channel, message);
@@ -56,53 +62,54 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
   });
-
 });
+
+var allPolls = {}
+var activePolls = []
 
 function createNewPoll(channel, message, socket){
   if(channel === 'createNewPoll'){
-  var id = crypto.randomBytes(10).toString('hex');
-  var urls = createUrls(id);
+  var randomId = crypto.randomBytes(10).toString('hex');
+  var urls = createUrls(randomId);
   var newPoll = {}
 
-  newPoll.pollId = id
+  newPoll.pollId = randomId
   newPoll.pollUrls = urls
   newPoll.pollInfo = message
   newPoll.votes = {}
 
-  polls[id] = newPoll
+  allPolls[randomId] = newPoll
   activePolls.push(newPoll)
   socket.emit('newPoll', newPoll)
   };
 };
 
-function createUrls(id){
-  var adminUrl = 'polls/' + id
-  var userUrl  = 'vote/' + id
-  return {adminUrl: adminUrl,
-          userUrl: userUrl,
+function createUrls(randomId){
+  return {adminUrl: 'polls/' + randomId,
+          userUrl: 'vote/' + randomId,
           }
 };
 
-function pollVotes(channel, message, socket){
+function pollVotes(channel, incommingPoll, socket){
   if(channel === "voteCast"){
-    if(polls[message.pollId]['pollInfo']['active']){
-       polls[message.pollId]['votes'][socket.id] = message.vote
+    var pollId = incommingPoll.pollId
+    if(allPolls[pollId]['pollInfo']['active']){
+       allPolls[pollId]['votes'][socket.id] = incommingPoll.vote
      };
-    var individualPollChannel = polls[message.pollId]['pollId']
-    var organizedPoll = organizePoll(polls[message.pollId]['votes'])
+    var individualPollChannel = allPolls[pollId]['pollId']
+    var organizedPoll = organizePoll(allPolls[pollId]['votes'])
     io.sockets.emit(individualPollChannel, organizedPoll)
   };
 };
 
-function organizePoll(poll){
-  var goodLookingPoll = _.invertBy(poll);
+function organizePoll(uglyPoll){
+  var goodLookingPoll = _.invertBy(uglyPoll);
   return goodLookingPoll
 };
 
 function closePoll(channel, pollId){
   if(channel === "close-poll"){
-    polls[pollId]['pollInfo']['active'] = false
+    allPolls[pollId]['pollInfo']['active'] = false
     io.sockets.emit("pollEnded", {})
   }
 };
