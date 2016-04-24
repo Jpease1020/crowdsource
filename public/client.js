@@ -43,7 +43,7 @@ socket.on('newPoll', function(poll){
   $newPollLinks.append('<div>Send this link to your voters for a private vote: <a href=' +
                         poll.pollUrls.userUrl +
                        '>Private Voting Page</a></div>')
-  $closePollDiv.append('<button class="close-poll" id="' + poll.pollUrls.adminUrl + '">Close the Poll Whenever You Want</buttton>')
+  $closePollDiv.append('<button class="close-poll" id="' + poll.pollUrls.adminUrl + '">Close the Poll</buttton>')
 });
 
 var $choices = document.querySelectorAll('.poll-choices button');
@@ -57,7 +57,6 @@ for (var i = 0; i < $choices.length; i++) {
 };
 
 socket.on($pollId, function(votes){
-  console.log("this is a privte vote", votes)
   $('.all-votes').children().remove()
   for(var vote in votes){
     $('.all-votes').append('<div>' + vote + ': ' + votes[vote].length + '</div>')
@@ -65,8 +64,7 @@ socket.on($pollId, function(votes){
 });
 
 socket.on("pollEnded", function(){
-  console.log("poll has now closed", $choices)
-  $('.vote-cast').remove()
+  $('.poll-choices').children().remove()
   $('.poll-choices').append(
     '<h2>thanks for playing but the poll is now closed</h2>'
     )

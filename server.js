@@ -86,8 +86,9 @@ function createUrls(id){
 
 function pollVotes(channel, message, socket){
   if(channel === "voteCast"){
-    polls[message.pollId]['votes'][socket.id] = message.vote
-    console.log(polls)
+    if(polls[message.pollId]['pollInfo']['active']){
+       polls[message.pollId]['votes'][socket.id] = message.vote
+     };
     var individualPollChannel = polls[message.pollId]['pollId']
     var organizedPoll = organizePoll(polls[message.pollId]['votes'])
     io.sockets.emit(individualPollChannel, organizedPoll)
@@ -101,23 +102,22 @@ function organizePoll(poll){
 
 function closePoll(channel, pollId){
   if(channel === "close-poll"){
-    console.log(polls[pollId])
     polls[pollId]['pollInfo']['active'] = false
-    console.log(polls[pollId])
     io.sockets.emit("pollEnded", {})
   }
 };
 
 setInterval(function() {
     for(var i = 0; i <= activePolls.length -1; i++){
-      var pollInfo = (activePolls[i]['pollInfo'] || 600000)
-      var pollEndTime = pollInfo['startTime'] + (pollInfo['pollDuration'] * 60000)
+      var pollInfo = activePolls[i]['pollInfo']
+      var pollDuration = pollInfo['pollDuration'] || 1000
+      var pollEndTime = pollInfo['startTime'] + (pollDuration * 60000)
       if(pollEndTime < Date.now()){
         pollInfo['active'] = false
         activePolls.splice(activePolls.indexOf(activePolls[i]), 1)
         io.sockets.emit("pollEnded", {})
       };
     };
-}, 10000);
+}, 1000);
 
 module.exports = server;
