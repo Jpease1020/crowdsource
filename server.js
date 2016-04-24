@@ -29,14 +29,22 @@ app.get('/', function (req, res){
 });
 
 app.get("/polls/:id", function(req, res){
-  var poll = allPolls[req.params.id]
-  res.render('polls', { poll: poll });
+  res.render('polls', { poll: getPollByParamsId(req) });
 });
 
 app.get("/vote/:id", function(req, res){
-  var poll = allPolls[req.params.id]
-  res.render('vote', { poll: poll });
+  res.render('vote', { poll: getPollByParamsId(req) });
 });
+
+function getPollByParamsId(req){
+  var poll = allPolls[req.params.id]
+  return poll
+};
+
+// var channellChecker = { 'createNewPoll': createNewPoll,
+//                         'voteCast': pollVotes,
+//                         'close-poll': closePoll
+//                       }
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -45,6 +53,7 @@ io.on('connection', function (socket) {
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
+    // channellChecker[channel]
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
     closePoll(channel, message);
