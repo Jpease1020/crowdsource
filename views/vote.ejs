@@ -10,9 +10,10 @@
     <div class="pole-name">
       <h1><%= poll.pollInfo.pollName %></h1>
     </div>
-    <div>Your vote: <span id="your-vote"></span></div>
+    <div>Your vote: <span id="your-vote"></span></div><br>
     <% if(poll.pollInfo.active){ %>
       <div class="poll-choices">
+        <label>Cast a Vote: </label>
         <% for(option in poll.pollInfo.pollOptions){ %>
           <button class="vote-cast"><%= poll.pollInfo.pollOptions[option] %></button>
         <% } %>
