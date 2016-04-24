@@ -14,12 +14,16 @@
       <h2>Pole Name: <%= poll.pollInfo.pollName %></h2>
     </div>
     <div>Your vote: <span id="your-vote"></span></div><br>
-    <div class="poll-choices">
-      <label>Cast a Vote: </label>
+    <% if(poll.pollInfo.active){ %>
+      <div class="poll-choices">
+        <label>Cast a Vote: </label>
         <% for(option in poll.pollInfo.pollOptions){ %>
-        <button class="vote-cast"><%= poll.pollInfo.pollOptions[option] %></button>
+          <button class="vote-cast"><%= poll.pollInfo.pollOptions[option] %></button>
         <% } %>
-    </div><br>
+      </div><br>
+    <% } else { %>
+      <h2>thanks for playing but the poll is now closed</h2><br>
+    <% } %>
     <h2>Here are the poll's votes: </h2>
     <div class="all-votes"></div>
 
