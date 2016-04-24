@@ -16,7 +16,11 @@
     "mocha": "^2.4.5",
     "ejs": "^2.3.4",
     "jquery": "^2.2.0",
-    "lodash": "^4.0.0"
+    "crypto-js": "^3.1.6",
+    "locus": "^1.2.0",
+    "lodash": "^4.6.1",
+    "request": "^2.69.0",
+    "socket.io": "^1.4.5"
   },
   "devDependencies": {
     "mocha": "^2.4.5",
