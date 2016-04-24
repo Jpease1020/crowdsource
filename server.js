@@ -63,16 +63,16 @@ function createNewPoll(channel, message, socket){
   if(channel === 'createNewPoll'){
   var id = crypto.randomBytes(10).toString('hex');
   var urls = createUrls(id);
-  var yourNewPoll = {}
+  var newPoll = {}
 
-  yourNewPoll.pollId = id
-  yourNewPoll.pollUrls = urls
-  yourNewPoll.pollInfo = message
-  yourNewPoll.votes = {}
+  newPoll.pollId = id
+  newPoll.pollUrls = urls
+  newPoll.pollInfo = message
+  newPoll.votes = {}
 
-  polls[id] = yourNewPoll
-  activePolls.push(yourNewPoll)
-  socket.emit('newPoll', yourNewPoll)
+  polls[id] = newPoll
+  activePolls.push(newPoll)
+  socket.emit('newPoll', newPoll)
   };
 };
 
