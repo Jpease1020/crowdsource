@@ -50,7 +50,6 @@ io.on('connection', function (socket) {
   socket.on('message', function (channel, message) {
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
-    adminControlls(channel, message, socket);
     closePoll(channel, message);
   });
 
@@ -100,16 +99,12 @@ function organizePoll(poll){
   return goodLookingPoll
 };
 
-function adminControlls(channel, message, socket){
-  if(channel === 'password'){
-    socket.emit('ok')
-  }
-};
-
 function closePoll(channel, pollId){
   if(channel === "close-poll"){
-    console.log('heyeyeyeyeyeyeey')
+    console.log(polls[pollId])
     polls[pollId]['pollInfo']['active'] = false
+    console.log(polls[pollId])
+    io.sockets.emit("pollEnded", {})
   }
 };
 

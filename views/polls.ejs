@@ -8,13 +8,6 @@
     <h1>View the Poll</h1>
     <div class="poll-id hidden"><%= poll.pollId %></div>
     <div class="poll-info hidden"><%= poll.pollInfo %></div>
-    <div class="admin-stuff">
-      <% if(poll.pollInfo.password){ %>
-        <p>Input password for admin controll</p>
-        <input id="password" class="input" type="text" placeholder="Admin Password"></input><br>
-        <input type="submit" id="submit-password"></input>
-      <% } %>
-    </div>
     <div class="pole-name">
       <h1>Pole Name: <%= poll.pollInfo.pollName %></h1>
     </div>
@@ -24,7 +17,7 @@
           <button class="vote-cast"><%= poll.pollInfo.pollOptions[option] %></button>
         <% } %>
     </div><br>
-    <h3>Here is your poll votes: </h3>
+    <h3>Here are your poll votes: </h3>
     <div class="all-votes">
     </div>
     <script src="/socket.io/socket.io.js"></script>
