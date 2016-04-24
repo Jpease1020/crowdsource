@@ -1,6 +1,7 @@
 const assert = require('assert');
 const request = require('request');
 const app = require('../server');
+const crypto = require('crypto');
 
 describe('Server', () => {
 
@@ -31,6 +32,22 @@ describe('Server', () => {
         assert.equal(response.statusCode, 200);
         done();
       });
-    })
+    });
+  });
+
+  describe('GET /polls/:id', (done) => {
+    beforeEach(() => {
+      var id = crypto.randomBytes(10).toString('hex');
+        app.locals.polls = { }
+      });
+    it('should return a 200', (done) => {
+      // [id] = { "pole" : 3 }
+      this.request.get('/polls/' + id, (error, response) => {
+          if(error){ done(error); }
+          console.log(response.body)
+          assert.equal(response.statusCode, 200);
+          done();
+      });
+    });
   });
 });
