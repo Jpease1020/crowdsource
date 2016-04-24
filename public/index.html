@@ -15,18 +15,29 @@
 
     <h2>Enter info here for your new poll</h2>
     <form>
+      <label for="">Poll Title</label>
       <input id="poll-name" class="input" type="text" placeholder="Poll Name"></input><br>
       <div class="poll-options">
+      <label>Create Options</label>
         <input class="option" type="text" placeholder="poll option"></input>
       </div>
       <button class="add-option">Add Option</button>
       <button class="remove-option">Remove Option</button>
+      <p>Optional: How many minutes from now do you want to close the poll?</p>
+      <input type="text" class="close-poll-time" placeholder="#"></input>
+      <p>That's is click below to create your poll</p>
       <div class="">
         <input type="submit" class="submit-poll"></input>
       </div>
     </form>
 
     <div class="new-poll-links">
+    </div>
+    <div id="close-poll-button">
+    </div>
+
+    <h3>Here are your poll votes: </h3>
+    <div class="all-votes">
     </div>
 
     <!-- Make sure your JS is at the bottom of the body! -->

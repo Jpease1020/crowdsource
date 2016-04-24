@@ -20,10 +20,12 @@ $removeOption.on('click', function(event){
 });
 
 $('.submit-poll').on('click', function(){
+  var $pollDuration = $('.close-poll-time').val()
   event.preventDefault();
-  var $pollName = $('#poll-name').val();
-  var newPollInfo = { pollName: $pollName,
-                      pollOptions: {}
+  var newPollInfo = { pollOptions: {},
+                      startTime: Date.now(),
+                      pollDuration: parseInt($pollDuration),
+                      active: true
                     };
 
   var options = $('.option').map(function(index, element) {
@@ -33,7 +35,7 @@ $('.submit-poll').on('click', function(){
 });
 
 var $newPollLinks = $('.new-poll-links')
-
+var $closePollDiv = $('#close-poll-button')
 socket.on('newPoll', function(poll){
   $('.new-poll-links').children().remove()
   $newPollLinks.append("<div>This link will shows the poll results as they come in: <a href=" +
@@ -41,23 +43,35 @@ socket.on('newPoll', function(poll){
   $newPollLinks.append('<div>Send this link to your voters for a private vote: <a href=' +
                         poll.pollUrls.userUrl +
                        '>Private Voting Page</a></div>')
-  console.log(poll)
+  $closePollDiv.append('<button class="close-poll" id="' + poll.pollUrls.adminUrl + '">Close the Poll</buttton>')
 });
 
 var $choices = document.querySelectorAll('.poll-choices button');
-var pollId = $('.poll-id').html()
+var $pollId = $('.poll-id').html()
 for (var i = 0; i < $choices.length; i++) {
   $choices[i].addEventListener('click', function () {
-    var message = {pollId: pollId, vote: this.innerText}
+    var message = {pollId: $pollId, vote: this.innerText}
     socket.send('voteCast', message);
     $('#your-vote').html(this.innerText)
   });
 };
 
-socket.on(pollId, function(votes){
-  console.log("this is a privte vote", votes)
+socket.on($pollId, function(votes){
   $('.all-votes').children().remove()
   for(var vote in votes){
     $('.all-votes').append('<div>' + vote + ': ' + votes[vote].length + '</div>')
   }
+});
+
+socket.on("pollEnded", function(){
+  $('.poll-choices').children().remove()
+  $('.poll-choices').append(
+    '<h2>thanks for playing but the poll is now closed</h2>'
+    )
+});
+
+$('#close-poll-button').delegate('.close-poll', 'click', function(){
+  var url = $('.close-poll').attr('id')
+  var id = url.substring(6, url.length)
+  socket.send("close-poll", id)
 });

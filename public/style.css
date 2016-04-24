@@ -1,3 +1,7 @@
 .hidden {
   display: none
 }
+
+.close-poll-time{
+  width: 20px;
+}
