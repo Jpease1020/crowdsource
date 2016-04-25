@@ -2,8 +2,12 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const ejs = require('ejs')
-const _ = require('lodash')
-const crypto = require('crypto');
+
+const createNewPoll = require('./lib/poll-creator')
+const getPollByParamsId = require('./lib/pole-finder')
+const pollVotes = require('./lib/poll-votes')
+const closePoll = require('./lib/close-poll')
+const checkForClosedPolls = require('./lib/check-for-closed-polls')
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
@@ -23,22 +27,20 @@ const io = socketIo(server);
 app.use(express.static('public'));
 app.set('view engine', 'ejs')
 
-
 app.get('/', function (req, res){
   res.render('index');
 });
 
 app.get("/polls/:id", function(req, res){
-  res.render('polls', { poll: getPollByParamsId(req) });
+  res.render('polls', { poll: getPollByParamsId(req, app) });
 });
 
 app.get("/vote/:id", function(req, res){
-  res.render('vote', { poll: getPollByParamsId(req) });
+  res.render('vote', { poll: getPollByParamsId(req, app) });
 });
 
-function getPollByParamsId(req){
-  return app.locals.allPolls[req.params.id]
-};
+app.locals.allPolls = {}
+app.locals.activePolls = []
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -47,9 +49,9 @@ io.on('connection', function (socket) {
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
-    createNewPoll(channel, message, socket);
-    pollVotes(channel, message, socket);
-    closePoll(channel, message);
+    createNewPoll(channel, message, socket, app);
+    pollVotes(channel, message, socket, app, io);
+    closePoll(channel, message, app, io);
   });
 
   socket.on('disconnect', function () {
@@ -57,67 +59,6 @@ io.on('connection', function (socket) {
   });
 });
 
-app.locals.allPolls = {}
-var activePolls = []
-
-function createNewPoll(channel, message, socket){
-  if(channel === 'createNewPoll'){
-  var randomId = crypto.randomBytes(10).toString('hex');
-  var urls = createUrls(randomId);
-  var newPoll = {}
-
-  newPoll.pollId = randomId
-  newPoll.pollUrls = urls
-  newPoll.pollInfo = message
-  newPoll.votes = {}
-
-  app.locals.allPolls[randomId] = newPoll
-  activePolls.push(newPoll)
-  socket.emit('newPoll', newPoll)
-  };
-};
-
-function createUrls(randomId){
-  return {adminUrl: 'polls/' + randomId,
-          userUrl: 'vote/' + randomId,
-          }
-};
-
-function pollVotes(channel, incommingPoll, socket){
-  if(channel === "voteCast"){
-    var pollId = incommingPoll.pollId
-    if(app.locals.allPolls[pollId]['pollInfo']['active']){
-       app.locals.allPolls[pollId]['votes'][socket.id] = incommingPoll.vote
-     };
-    var individualPollChannel = app.locals.allPolls[pollId]['pollId']
-    var organizedPoll = organizePoll(app.locals.allPolls[pollId]['votes'])
-    io.sockets.emit(individualPollChannel, organizedPoll)
-  };
-};
-
-function organizePoll(uglyPoll){
-  var goodLookingPoll = _.invertBy(uglyPoll);
-  return goodLookingPoll
-};
-
-function closePoll(channel, pollId){
-  if(channel === "close-poll"){
-    app.locals.allPolls[pollId]['pollInfo']['active'] = false
-    io.sockets.emit("pollEnded", {})
-  }
-};
-
-setInterval(function() {
-    for(var i = 0; i <= activePolls.length -1; i++){
-      var pollInfo = activePolls[i]['pollInfo']
-      var pollDuration = pollInfo['pollDuration'] || 1440
-      var pollEndTime = pollInfo['startTime'] + (pollDuration * 60000)
-      if(pollEndTime < Date.now()){
-        pollInfo['active'] = false
-        activePolls.splice(activePolls.indexOf(activePolls[i]), 1)
-        io.sockets.emit("pollEnded", {})
-      };
-    };
-}, 1000);
+checkForClosedPolls(app, io)
 
 module.exports = app;
