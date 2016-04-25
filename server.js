@@ -53,7 +53,7 @@ io.on('connection', function (socket) {
       createNewPoll(message, socket, app);
     } else if (channel === 'voteCast') {
       pollVotes(message, socket, app, io);
-    } else if (channel === 'close-poll') {
+    } else {
       closePoll(channel, message, app, io);
     }
   });
