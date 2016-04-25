@@ -4,6 +4,7 @@ const app = express();
 const ejs = require('ejs')
 const _ = require('lodash')
 const createNewPoll = require('./lib/poll-creator')
+const getPollByParamsId = require('./lib/pole-finder')
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
@@ -29,16 +30,12 @@ app.get('/', function (req, res){
 });
 
 app.get("/polls/:id", function(req, res){
-  res.render('polls', { poll: getPollByParamsId(req) });
+  res.render('polls', { poll: getPollByParamsId(req, app) });
 });
 
 app.get("/vote/:id", function(req, res){
-  res.render('vote', { poll: getPollByParamsId(req) });
+  res.render('vote', { poll: getPollByParamsId(req, app) });
 });
-
-function getPollByParamsId(req){
-  return app.locals.allPolls[req.params.id]
-};
 
 app.locals.allPolls = {}
 app.locals.activePolls = []
