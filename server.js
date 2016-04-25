@@ -2,9 +2,10 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const ejs = require('ejs')
-const _ = require('lodash')
+// const _ = require('lodash')
 const createNewPoll = require('./lib/poll-creator')
 const getPollByParamsId = require('./lib/pole-finder')
+const pollVotes = require('./lib/poll-votes')
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
@@ -48,7 +49,7 @@ io.on('connection', function (socket) {
 
   socket.on('message', function (channel, message) {
     createNewPoll(channel, message, socket, app);
-    pollVotes(channel, message, socket);
+    pollVotes(channel, message, socket, app, io);
     closePoll(channel, message);
   });
 
@@ -57,23 +58,6 @@ io.on('connection', function (socket) {
   });
 });
 
-
-function pollVotes(channel, incommingPoll, socket){
-  if(channel === "voteCast"){
-    var pollId = incommingPoll.pollId
-    if(app.locals.allPolls[pollId]['pollInfo']['active']){
-       app.locals.allPolls[pollId]['votes'][socket.id] = incommingPoll.vote
-     };
-    var individualPollChannel = app.locals.allPolls[pollId]['pollId']
-    var organizedPoll = organizePoll(app.locals.allPolls[pollId]['votes'])
-    io.sockets.emit(individualPollChannel, organizedPoll)
-  };
-};
-
-function organizePoll(uglyPoll){
-  var goodLookingPoll = _.invertBy(uglyPoll);
-  return goodLookingPoll
-};
 
 function closePoll(channel, pollId){
   if(channel === "close-poll"){
