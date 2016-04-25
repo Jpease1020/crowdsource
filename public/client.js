@@ -18,7 +18,6 @@ socket.on($pollId, function(votes){
   for(var vote in votes){
     $('.all-votes').append('<div>' + vote + ': ' + votes[vote].length + '</div>')
   }
-  console.log(votes)
 });
 
 socket.on("pollEnded", function(){
@@ -37,30 +36,34 @@ function addOptionsToPage(){
 
 function removeOptionFromPage(){
   $('.remove-option').on('click', function(event){
-    console.log("yepper")
     event.preventDefault();
     $('.option').last().remove()
   });
 }
 
 var $pollName = $('#poll-name').val();
+
 function submitPoll(){
   $('.submit-poll').on('click', function(){
     event.preventDefault();
-    var $pollDuration = $('.close-poll-time').val()
-    var $pollName = $('#poll-name').val();
-    var newPollInfo = { pollName: $pollName,
-                        pollOptions: {},
-                        startTime: Date.now(),
-                        pollDuration: parseInt($pollDuration),
-                        active: true
-                      };
-    var options = $('.option').map(function(index, element) {
-      newPollInfo.pollOptions['option' + (index + 1)] = $(element).val()
-    });
-
+    var newPollInfo = collectedPollInfo()
     socket.send('createNewPoll', newPollInfo);
   });
+}
+
+function collectedPollInfo(){
+  var $pollDuration = $('.close-poll-time').val()
+  var $pollName = $('#poll-name').val();
+  var newPollInfo = { pollName: $pollName,
+                      pollOptions: {},
+                      startTime: Date.now(),
+                      pollDuration: parseInt($pollDuration),
+                      active: true
+                    };
+  var options = $('.option').map(function(index, element) {
+    newPollInfo.pollOptions['option' + (index + 1)] = $(element).val()
+  });
+  return newPollInfo
 }
 
 function displayPollInfo(){
@@ -74,7 +77,9 @@ function displayPollInfo(){
                           poll.pollUrls.userUrl +
                          '>Private Voting Page</a></div>')
     $closePollDiv.children().remove()
-    $closePollDiv.append('<button class="close-poll" id="' + poll.pollUrls.adminUrl + '">Close the Poll</buttton>')
+    $closePollDiv.append('<p>Click below at any time to close the poll</p>' +
+                         '<button class="close-poll" id="' + poll.pollUrls.adminUrl +
+                         '">Close the Poll</buttton>')
   });
 };
 

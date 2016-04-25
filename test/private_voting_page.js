@@ -44,7 +44,6 @@ describe('Private Voting Page', () => {
     it('should have the voting options of the poll', (done) => {
       this.request.get('/vote/' + id, (error, response) => {
           if(error){ done(error); }
-          console.log(response.body)
           assert(response.body.includes('Of course!'),
                `"${response.body}" does not include Of Course!.`);
           done();

@@ -40,11 +40,6 @@ function getPollByParamsId(req){
   return app.locals.allPolls[req.params.id]
 };
 
-// var channellChecker = { 'createNewPoll': createNewPoll,
-//                         'voteCast': pollVotes,
-//                         'close-poll': closePoll
-//                       }
-
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
 
@@ -52,7 +47,6 @@ io.on('connection', function (socket) {
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
-    // channellChecker[channel]
     createNewPoll(channel, message, socket);
     pollVotes(channel, message, socket);
     closePoll(channel, message);

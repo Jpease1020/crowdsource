@@ -27,10 +27,11 @@
         </div>
         <div class="">
           <p>Optional: How many minutes from now do you want to close the poll?</p>
+          <p>If you leave it blank the poll with remain open fr 24 hours</p>
           <input type="text" class="close-poll-time" placeholder="#"></input>
         </div>
         <div class="">
-          <p>That's is click submit to create your poll and receive links to the poll</p>
+          <p>Click submit to create your poll and receive links to the poll</p>
           <input type="submit" class="submit-poll"></input>
         </div>
       </fieldset>
@@ -38,11 +39,9 @@
 
     <div class="new-poll">
       <div class="new-poll-links"></div><br>
-      <p>Click below at any time to close the poll</p>
       <div id="close-poll-button"></div>
     </div>
 
-    <!-- Make sure your JS is at the bottom of the body! -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/jquery.js"></script>
     <script src="/client.js"></script>
