@@ -49,9 +49,13 @@ io.on('connection', function (socket) {
   socket.emit('statusMessage', 'You have connected.');
 
   socket.on('message', function (channel, message) {
-    createNewPoll(channel, message, socket, app);
-    pollVotes(channel, message, socket, app, io);
-    closePoll(channel, message, app, io);
+    if (channel === 'createNewPoll') {
+      createNewPoll(message, socket, app);
+    } else if (channel === 'voteCast') {
+      pollVotes(message, socket, app, io);
+    } else {
+      closePoll(channel, message, app, io);
+    }
   });
 
   socket.on('disconnect', function () {
