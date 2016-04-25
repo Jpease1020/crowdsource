@@ -2,10 +2,10 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const ejs = require('ejs')
-// const _ = require('lodash')
 const createNewPoll = require('./lib/poll-creator')
 const getPollByParamsId = require('./lib/pole-finder')
 const pollVotes = require('./lib/poll-votes')
+const closePoll = require('./lib/close-poll')
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
@@ -24,7 +24,6 @@ const io = socketIo(server);
 
 app.use(express.static('public'));
 app.set('view engine', 'ejs')
-
 
 app.get('/', function (req, res){
   res.render('index');
@@ -50,21 +49,13 @@ io.on('connection', function (socket) {
   socket.on('message', function (channel, message) {
     createNewPoll(channel, message, socket, app);
     pollVotes(channel, message, socket, app, io);
-    closePoll(channel, message);
+    closePoll(channel, message, app, io);
   });
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
   });
 });
-
-
-function closePoll(channel, pollId){
-  if(channel === "close-poll"){
-    app.locals.allPolls[pollId]['pollInfo']['active'] = false
-    io.sockets.emit("pollEnded", {})
-  }
-};
 
 setInterval(function() {
     for(var i = 0; i <= app.locals.activePolls.length -1; i++){
