@@ -18,6 +18,7 @@ socket.on($pollId, function(votes){
   for(var vote in votes){
     $('.all-votes').append('<div>' + vote + ': ' + votes[vote].length + '</div>')
   }
+  console.log(votes)
 });
 
 socket.on("pollEnded", function(){
@@ -43,7 +44,6 @@ function removeOptionFromPage(){
 }
 
 var $pollName = $('#poll-name').val();
-
 function submitPoll(){
   $('.submit-poll').on('click', function(){
     event.preventDefault();

@@ -13,7 +13,7 @@ const server = http.createServer(app)
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
-    // console.log(`${app.locals.title} is running on ${app.get('port')}.`);
+    console.log(`${app.locals.title} is running on ${app.get('port')}.`);
   });
 }
 
@@ -37,8 +37,7 @@ app.get("/vote/:id", function(req, res){
 });
 
 function getPollByParamsId(req){
-  var poll = allPolls[req.params.id]
-  return poll
+  return app.locals.allPolls[req.params.id]
 };
 
 // var channellChecker = { 'createNewPoll': createNewPoll,
@@ -64,7 +63,7 @@ io.on('connection', function (socket) {
   });
 });
 
-var allPolls = {}
+app.locals.allPolls = {}
 var activePolls = []
 
 function createNewPoll(channel, message, socket){
@@ -78,7 +77,7 @@ function createNewPoll(channel, message, socket){
   newPoll.pollInfo = message
   newPoll.votes = {}
 
-  allPolls[randomId] = newPoll
+  app.locals.allPolls[randomId] = newPoll
   activePolls.push(newPoll)
   socket.emit('newPoll', newPoll)
   };
@@ -93,11 +92,11 @@ function createUrls(randomId){
 function pollVotes(channel, incommingPoll, socket){
   if(channel === "voteCast"){
     var pollId = incommingPoll.pollId
-    if(allPolls[pollId]['pollInfo']['active']){
-       allPolls[pollId]['votes'][socket.id] = incommingPoll.vote
+    if(app.locals.allPolls[pollId]['pollInfo']['active']){
+       app.locals.allPolls[pollId]['votes'][socket.id] = incommingPoll.vote
      };
-    var individualPollChannel = allPolls[pollId]['pollId']
-    var organizedPoll = organizePoll(allPolls[pollId]['votes'])
+    var individualPollChannel = app.locals.allPolls[pollId]['pollId']
+    var organizedPoll = organizePoll(app.locals.allPolls[pollId]['votes'])
     io.sockets.emit(individualPollChannel, organizedPoll)
   };
 };
@@ -109,7 +108,7 @@ function organizePoll(uglyPoll){
 
 function closePoll(channel, pollId){
   if(channel === "close-poll"){
-    allPolls[pollId]['pollInfo']['active'] = false
+    app.locals.allPolls[pollId]['pollInfo']['active'] = false
     io.sockets.emit("pollEnded", {})
   }
 };
@@ -127,4 +126,4 @@ setInterval(function() {
     };
 }, 1000);
 
-module.exports = server;
+module.exports = app;

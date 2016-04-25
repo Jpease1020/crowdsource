@@ -2,6 +2,7 @@ const assert = require('assert');
 const request = require('request');
 const app = require('../server');
 const crypto = require('crypto');
+const fixtures = require('./fixtures');
 
 describe('Server', () => {
 
@@ -36,16 +37,27 @@ describe('Server', () => {
   });
 
   describe('GET /polls/:id', (done) => {
-    beforeEach(() => {
-      var id = crypto.randomBytes(10).toString('hex');
-        app.locals.polls = { }
-      });
-    it('should return a 200', (done) => {
-      // [id] = { "pole" : 3 }
+    var testPoll = fixtures.validPoll
+    app.locals.allPolls[testPoll.pollId] = testPoll
+    var id = testPoll.pollId
+
+    it('should not return a 404', (done) => {
       this.request.get('/polls/' + id, (error, response) => {
           if(error){ done(error); }
-          console.log(response.body)
-          assert.equal(response.statusCode, 200);
+          assert.notEqual(response.statusCode, 404);
+          done();
+      });
+    });
+  });
+
+  describe('GET /vote/:id', (done) => {
+    it('should not return a 404', (done) => {
+      var testPoll = fixtures.validPoll
+      var id = testPoll.pollId
+      app.locals.allPolls[testPoll.pollId] = testPoll
+      this.request.get('/vote/' + id, (error, response) => {
+          if(error){ done(error); }
+          assert.notEqual(response.statusCode, 404);
           done();
       });
     });
